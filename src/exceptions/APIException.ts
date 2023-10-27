@@ -4,6 +4,7 @@ export default class APIException extends Error {
 
 	public constructor(status: number, message: string, type: "error" | "warn" = "error") {
 		super(`Error ${status}: ${message}`);
+
 		this.status = status;
 		this.type = type;
 	}

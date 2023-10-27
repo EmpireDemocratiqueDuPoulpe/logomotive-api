@@ -9,7 +9,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q src/index.ts\"",
+    "dev": "concurrently --prefix none \"npx tsc --watch\" \"nodemon -q src/index.ts\"",
     "build": "tsc",
     "serve": "node dist/index.js"
   },

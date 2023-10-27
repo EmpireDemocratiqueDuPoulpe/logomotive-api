@@ -11,16 +11,12 @@ const logger: Logger = new Logger({ separator: ": " });
  *************************************************************/
 function expressLogger(err: Error, request: Request, _response: Response, next: NextFunction) : void {
 	const url: string = `${request.protocol}://${request.headers.host}${request.originalUrl}`;
-	const stack: string | null = err.stack ? (`\t${err.stack.replace(/\n\r?/g, "\n\t")}`) : null;
-	const message: string = (!stack ? err.message : (`${err.message}${err.message ? "\n" : ""}${stack}`));
+	const stack: string | null = err.stack ? (`\t${err.stack.replace(/\n\r?/g, "\n\t")}`) : err.message;
 
 	if (err instanceof APIException) {
-		(err.type === "warn" ? logger.warn : logger.error)(
-			`At ${url}\n${message}`,
-			{ ip: request.clientIp }
-		);
+		logger[err.type](`At ${url}\n${stack}`, { ip: request.clientIp });
 	} else {
-		logger.error(`Unexpected error: ${message}`);
+		logger.error(`Unexpected error: ${stack}`);
 	}
 
 	next({ url, ref: err });
@@ -36,7 +32,7 @@ function errorForwarder(err: ForwardedError, _request: Request, response: Respon
 		resp.send(response);
 	}
 
-	next(resp);
+	next();
 }
 
 /*************************************************************
