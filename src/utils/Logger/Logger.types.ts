@@ -8,6 +8,6 @@ export type LoggerOptions = {
 export type MessageOptions = {
 	withTime?: boolean
 	ip?: string
-	params?: string
+	params?: { [key: string]: unknown }
 	isSubLevel?: boolean
 }

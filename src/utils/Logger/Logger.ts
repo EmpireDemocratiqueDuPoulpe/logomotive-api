@@ -28,13 +28,13 @@ export default class Logger {
 	}
 
 	private buildMessage(message: string, { withTime = true, ip = undefined, params = undefined, isSubLevel = false }: MessageOptions = {}) : string {
-		const now: string = withTime ? this.dateToString(new Date()) : "";
-		const ipStr: string = ip ? `[${ip}]` : "";
+		const now: string = withTime ? ` ${this.dateToString(new Date())}` : "";
+		const ipStr: string = ip ? ` [${ip}]` : "";
 		const paramsStr: string = params ? (
-			Object.entries(params).map(([key, value]) : string => `${key}=${value}`).join(", ")
+			`[${Object.entries(params).map(([key, value]) : string => `${key}=${value}`).join(", ")}]`
 		) : "";
 
-		let preSeparator: string = `${this.prefix}${now ? `${now} ` : ""}${ipStr}${this.separator}`.green;
+		let preSeparator: string = `${this.prefix}${now}${ipStr}${this.separator}`.green;
 		let postSeparator: string = `${message} ${paramsStr.gray}`;
 
 		if (isSubLevel) {

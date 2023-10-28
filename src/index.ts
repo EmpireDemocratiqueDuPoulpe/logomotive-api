@@ -9,6 +9,7 @@ import cors from "cors";
 import requestIP from "request-ip";
 import { errorHandler, requireHTTPS } from "./middlewares/";
 import { EndpointNotFound } from "./exceptions";
+import v1 from "./v1";
 
 function serverReady(protocol: "http" | "https", port: string | number) : void {
 	console.log(`~~~ Logo API | Now listening on port ${port} (${protocol}).`);
@@ -48,8 +49,8 @@ function startServer() : void {
 	app.use(cookieParser());
 
 	// Add API routes
-	// const apiPath: string = `${process.env.API_PREFIX ?? ""}${process.env.API_VERSION ? `/${process.env.API_VERSION}` : ""}`;
-	// app.use(apiPath, api());
+	const apiPath: string = process.env.API_PREFIX ?? "";
+	app.use(`${apiPath}/v1`, v1());
 
 	// Handle 404
 	app.use((request: Request) : void => {
