@@ -11,24 +11,35 @@ async function registerUser(request: Request, response: Response, next: NextFunc
 	const user: User = new User(request.body);
 	await validate(next, user, { groups: ["registration"] });
 
-	const resp: APIResponse = new APIResponse(200);
 	const userID: number = await userService.registerUser(user);
-	resp.setData({ userID }).send(response);
+	new APIResponse(200).setData({ userID }).send(response);
 
-	logger.log("Registered a new user", { params: {userID} });
+	logger.log("Registered a new user", { ip: request.clientIp, params: {userID} });
 }
 
-async function getAll(_request: Request, response: Response) : Promise<void> {
-	const resp: APIResponse = new APIResponse(200);
+async function getAll(request: Request, response: Response) : Promise<void> {
 	const users: User[] = await userService.getAll();
 
-	resp.setData({ users }).send(response);
-	logger.log("Get all users");
+	new APIResponse(200).setData({ users }).send(response);
+	logger.log("Get all users", { ip: request.clientIp });
 }
 
-function loginUser(_request: Request, response: Response) : void {
-	response.send(userService.loginUser());
-	// logger.log("Login user", { params: {email: user.email, success: !!userID} }); TODO
+async function loginUser(request: Request, response: Response, next: NextFunction) : Promise<void> {
+	const user: User = new User(request.body);
+	await validate(next, user, { groups: ["login"] });
+
+	const fullUser: User = await userService.getByEmailAndPassword(user.email, user.password);
+	request.session.regenerate(err => {
+		if (err) next(err);
+
+		request.session.user = fullUser;
+		request.session.save((saveErr) : void => {
+			if (saveErr) next(saveErr);
+
+			new APIResponse(200).send(response);
+			logger.log("Login user", { ip: request.clientIp, params: {userID: user.userID} });
+		});
+	});
 }
 
 export default {

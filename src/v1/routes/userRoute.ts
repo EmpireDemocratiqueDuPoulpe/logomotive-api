@@ -1,5 +1,6 @@
 import { Router } from "express";
 import AsyncRouter from "express-promise-router";
+import { isAuthenticated, isNotAuthenticated } from "../../middlewares";
 import userController from "../controllers/userController";
 
 const route: Router = AsyncRouter();
@@ -10,12 +11,12 @@ export default (router: Router) : void => {
 	/*************************************************************
 	 * CREATE
 	 *************************************************************/
-	route.post("/", userController.registerUser);
+	route.post("/", isNotAuthenticated, userController.registerUser);
 
 	/*************************************************************
 	 * READ
 	 *************************************************************/
-	route.get("/", userController.getAll);
+	route.get("/", isAuthenticated, userController.getAll);
 
 	/*************************************************************
 	 * UPDATE
@@ -27,6 +28,6 @@ export default (router: Router) : void => {
 	/*************************************************************
 	 * AUTH
 	 *************************************************************/
-	route.post("/login", userController.loginUser);
+	route.post("/login", isNotAuthenticated, userController.loginUser);
 
 };

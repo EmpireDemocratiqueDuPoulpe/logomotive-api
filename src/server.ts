@@ -7,12 +7,13 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import requestIP from "request-ip";
+import session, {MemoryStore} from "express-session";
 import { errorHandler, requireHTTPS } from "./middlewares/";
 import { EndpointNotFound } from "./exceptions";
 import v1 from "./v1";
 
 function serverReady(protocol: "http" | "https", port: string | number) : void {
-	console.log(`~~~ Logo API | Now listening on port ${port} (${protocol}).`);
+	console.log(`~~~ ${process.env.APP_NAME} | Now listening on port ${port} (${protocol}).`);
 }
 
 function startServer() : void {
@@ -42,6 +43,18 @@ function startServer() : void {
 
 	// IP
 	app.use(requestIP.mw({ attributeName: "clientIp" }));
+
+	// Session system
+	// TODO BEFORE PROD: Change the secret for a rotating key stored outside of the repo.
+	// TODO BEFORE PROD: Change the MemoryStore for a RedisStore (cf. connect-redis).
+	app.use(session({
+		name: `${process.env.APP_NAME}:connect.sid`,
+		secret: process.env.FOR_DEV_ONLY_SESSION_SECRET!,
+		store: new MemoryStore(),
+		resave: false,
+		saveUninitialized: false,
+		cookie: { secure: true }
+	}));
 
 	// Transform raw and x-www-form-urlencoded to nice JSON
 	app.use(bodyParser.json({ limit: "1mb" }));

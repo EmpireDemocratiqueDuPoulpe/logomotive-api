@@ -20,12 +20,12 @@ export default class User {
 	@Length(1, 32, { groups: [ "registration", "registered" ], message: "Le nom d'utilisateur doit faire entre $constraint1 et $constraint2 caractères." })
 	username: string;
 
-	@IsDefined({ groups: [ "registration", "registered" ], message: "L'adresse email est nécessaire." })
-	@IsEmail(undefined, { groups: [ "registration", "registered" ], message: "L'adresse email est invalide." })
+	@IsDefined({ groups: [ "registration", "registered", "login" ], message: "L'adresse email est nécessaire." })
+	@IsEmail(undefined, { groups: [ "registration", "registered", "login" ], message: "L'adresse email est invalide." })
 	email: string;
 
-	@IsDefined({ groups: [ "registered" ], message: "Le mot de passe est nécessaire." })
-	@IsString({ groups: [ "registered" ], message: "Le mot de passe est invalide." })
+	@IsDefined({ groups: [ "login" ], message: "Le mot de passe est nécessaire." })
+	@IsString({ groups: [ "login" ], message: "Le mot de passe est invalide." })
 	password: string;
 
 	@IsDefined({ groups: [ "registration" ], message: "Le mot de passe est nécessaire." })
