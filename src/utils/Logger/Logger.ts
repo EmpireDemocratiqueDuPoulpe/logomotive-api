@@ -6,7 +6,7 @@ export default class Logger {
 	private separator: string;
 	private colors: boolean = true;
 
-	public constructor({ prefix = undefined, separator = undefined, colors = true}: LoggerOptions) {
+	public constructor({ prefix = undefined, separator = undefined, colors = true}: LoggerOptions = {}) {
 		this.prefix = prefix ?? "";
 		this.separator = separator ?? " - ";
 		this.colors = colors ?? true;
