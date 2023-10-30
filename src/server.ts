@@ -53,7 +53,12 @@ function startServer() : void {
 		store: new MemoryStore(),
 		resave: false,
 		saveUninitialized: false,
-		cookie: { secure: true }
+		cookie: {
+			sameSite: false,
+			secure: (process.env.NODE_ENV !== "developement"),
+			maxAge: (process.env.NODE_ENV === "developement") ? undefined : 604_800_000,
+			httpOnly: true
+		}
 	}));
 
 	// Transform raw and x-www-form-urlencoded to nice JSON

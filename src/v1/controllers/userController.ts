@@ -11,10 +11,10 @@ async function registerUser(request: Request, response: Response, next: NextFunc
 	const user: User = new User(request.body);
 	await validate(next, user, { groups: ["registration"] });
 
-	const userID: number = await userService.registerUser(user);
-	new APIResponse(200).setData({ userID }).send(response);
+	const user_id: number = await userService.registerUser(user);
+	new APIResponse(200).setData({ user_id }).send(response);
 
-	logger.log("Registered a new user", { ip: request.clientIp, params: {userID} });
+	logger.log("Registered a new user", { ip: request.clientIp, params: {user_id} });
 }
 
 async function getAll(request: Request, response: Response) : Promise<void> {
@@ -36,8 +36,41 @@ async function loginUser(request: Request, response: Response, next: NextFunctio
 		request.session.save((saveErr) : void => {
 			if (saveErr) next(saveErr);
 
-			new APIResponse(200).send(response);
-			logger.log("Login user", { ip: request.clientIp, params: {userID: user.userID} });
+			new APIResponse(200).setData({ sessionID: request.session.id, user: fullUser }).send(response);
+			logger.log("Login user", { ip: request.clientIp, params: {user_id: fullUser.user_id} });
+		});
+	});
+}
+
+async function authenticateUser(request: Request, response: Response, next: NextFunction) : Promise<void> {
+	const user: User = new User(request.session.user!);
+	const storedUser: User = await userService.getByID(user.user_id);
+
+	request.session.regenerate(err => {
+		if (err) next(err);
+
+		request.session.user = storedUser;
+		request.session.save((saveErr) : void => {
+			if (saveErr) next(saveErr);
+
+			new APIResponse(200).setData({ sessionID: request.session.id, user: storedUser }).send(response);
+			logger.log("Authenticated user", { ip: request.clientIp, params: {user_id: storedUser.user_id} });
+		});
+	});
+}
+
+async function logoutUser(request: Request, response: Response, next: NextFunction) : Promise<void> {
+	const user_id: number = request.session.user!.user_id;
+
+	request.session.user = undefined;
+	request.session.save((saveErr) : void => {
+		if (saveErr) next(saveErr);
+
+		request.session.regenerate(err => {
+			if (err) next(err);
+
+			new APIResponse(204).send(response);
+			logger.log("Logout user", { ip: request.clientIp, params: {user_id} });
 		});
 	});
 }
@@ -45,5 +78,5 @@ async function loginUser(request: Request, response: Response, next: NextFunctio
 export default {
 	registerUser,
 	getAll,
-	loginUser
+	loginUser, authenticateUser, logoutUser
 };

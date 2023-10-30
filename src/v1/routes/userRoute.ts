@@ -29,5 +29,6 @@ export default (router: Router) : void => {
 	 * AUTH
 	 *************************************************************/
 	route.post("/login", isNotAuthenticated, userController.loginUser);
-
+	route.post("/authenticate", isAuthenticated, userController.authenticateUser);
+	route.post("/logout", isAuthenticated, userController.logoutUser);
 };

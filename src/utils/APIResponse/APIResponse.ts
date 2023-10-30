@@ -40,10 +40,10 @@ export default class APIResponse {
 
 	/* --- Functions ------------------------------------------------------------------------------------------------ */
 	public toJSON() : JSONResponse {
-		let json: JSONResponse = { status: this.status };
+		const json: JSONResponse = { status: this.status };
 
 		if (this.message) json.message = this.message;
-		if (this.data) json = { ...json, ...this.data };
+		if (this.data) json.data = this.data;
 		if (this.error) json.error = this.error;
 
 		return json;

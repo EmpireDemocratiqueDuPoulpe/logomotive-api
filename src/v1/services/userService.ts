@@ -15,18 +15,25 @@ async function registerUser(user: User) : Promise<number> {
 	}
 
 	const hashedPassword: string = await hashPassword(user.password1);
-	const response: QueryResult<Pick<User, "userID">> = await database.query(
+	const response: QueryResult<Pick<User, "user_id">> = await database.query(
 		"INSERT INTO users(username, email, password) VALUES($1, $2, $3) RETURNING user_id",
 		[user.username, user.email, hashedPassword]
 	);
 
 	if (!response.rowCount) throw new UnexpectedException("Impossible de créer un nouveau compte.");
-	return response.rows[0].userID;
+	return response.rows[0].user_id;
 }
 
 async function getAll() : Promise<User[]> {
 	const users: QueryResult<User> = await database.query("SELECT user_id, username, email FROM users");
 	return users.rows;
+}
+
+async function getByID(user_id: number) : Promise<User> {
+	const user: QueryResult<User> = await database.query("SELECT user_id, username, email FROM users WHERE user_id = $1", [user_id]);
+
+	if (!user.rowCount) throw new APIException(400, "Aucun utilisateur ne correspond à cet identifiant.");
+	return user.rows[0];
 }
 
 async function getByEmail(email: string) : Promise<User> {
@@ -50,5 +57,5 @@ async function getByEmailAndPassword(email: string, password: string) : Promise<
 
 export default {
 	registerUser,
-	getByEmail, getByEmailAndPassword, getAll,
+	getByID, getByEmail, getByEmailAndPassword, getAll,
 };

@@ -13,7 +13,7 @@ export default class User {
 	@IsDefined({ groups: [ "registered" ], message: "Identifiant utilisateur invalide." })
 	@IsInt({ groups: [ "registered" ], message: "Identifiant utilisateur invalide." })
 	@IsPositive({ groups: [ "registered" ], message: "Identifiant utilisateur invalide." })
-	userID: number;
+	user_id: number;
 
 	@IsDefined({ groups: [ "registration", "registered" ], message: "Le nom d'utilisateur est nécessaire." })
 	@IsString({ groups: [ "registration", "registered" ], message: "Le nom d'utilisateur est invalide." })
@@ -43,7 +43,7 @@ export default class User {
 	password2: string;
 
 	constructor(data: User) {
-		this.userID = data?.userID ?? -1;
+		this.user_id = data?.user_id ?? -1;
 		this.username = data?.username ?? "";
 		this.email = data?.email ?? "";
 		this.password = data?.password ?? "";
