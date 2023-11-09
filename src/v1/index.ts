@@ -1,4 +1,5 @@
 import { Router } from "express";
+import scriptRoute from "./routes/scriptRoute";
 import userRoute from "./routes/userRoute";
 
 export default (): Router => {
@@ -7,6 +8,7 @@ export default (): Router => {
 	// Middlewares
 
 	// Routes
+	scriptRoute(router);
 	userRoute(router);
 
 	return router;

@@ -43,11 +43,11 @@ export default class User {
 	password2: string;
 
 	constructor(data: User) {
-		this.user_id = data?.user_id ?? -1;
-		this.username = data?.username ?? "";
-		this.email = data?.email ?? "";
-		this.password = data?.password ?? "";
-		this.password1 = data?.password1 ?? "";
-		this.password2 = data?.password2 ?? "";
+		this.user_id = data?.user_id;
+		this.username = data?.username;
+		this.email = data?.email;
+		this.password = data?.password;
+		this.password1 = data?.password1;
+		this.password2 = data?.password2;
 	}
 }

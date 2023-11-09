@@ -7,9 +7,9 @@ import validate from "../../utils/validate";
 
 const logger: Logger = new Logger({ prefix: "[ROUTE] ➟" });
 
-async function registerUser(request: Request, response: Response, next: NextFunction) : Promise<void> {
+async function registerUser(request: Request, response: Response) : Promise<void> {
 	const user: User = new User(request.body);
-	await validate(next, user, { groups: ["registration"] });
+	await validate(user, { groups: ["registration"] });
 
 	const user_id: number = await userService.registerUser(user);
 	new APIResponse(200).setData({ user_id }).send(response);
@@ -26,15 +26,15 @@ async function getAll(request: Request, response: Response) : Promise<void> {
 
 async function loginUser(request: Request, response: Response, next: NextFunction) : Promise<void> {
 	const user: User = new User(request.body);
-	await validate(next, user, { groups: ["login"] });
+	await validate(user, { groups: ["login"] });
 
 	const fullUser: User = await userService.getByEmailAndPassword(user.email, user.password);
 	request.session.regenerate(err => {
-		if (err) next(err);
+		if (err) return next(err);
 
 		request.session.user = fullUser;
 		request.session.save((saveErr) : void => {
-			if (saveErr) next(saveErr);
+			if (saveErr) return next(saveErr);
 
 			new APIResponse(200).setData({ sessionID: request.session.id, user: fullUser }).send(response);
 			logger.log("Login user", { ip: request.clientIp, params: {user_id: fullUser.user_id} });
@@ -47,11 +47,11 @@ async function authenticateUser(request: Request, response: Response, next: Next
 	const storedUser: User = await userService.getByID(user.user_id);
 
 	request.session.regenerate(err => {
-		if (err) next(err);
+		if (err) return next(err);
 
 		request.session.user = storedUser;
 		request.session.save((saveErr) : void => {
-			if (saveErr) next(saveErr);
+			if (saveErr) return next(saveErr);
 
 			new APIResponse(200).setData({ sessionID: request.session.id, user: storedUser }).send(response);
 			logger.log("Authenticated user", { ip: request.clientIp, params: {user_id: storedUser.user_id} });
@@ -64,10 +64,10 @@ async function logoutUser(request: Request, response: Response, next: NextFuncti
 
 	request.session.user = undefined;
 	request.session.save((saveErr) : void => {
-		if (saveErr) next(saveErr);
+		if (saveErr) return next(saveErr);
 
 		request.session.regenerate(err => {
-			if (err) next(err);
+			if (err) return next(err);
 
 			new APIResponse(204).send(response);
 			logger.log("Logout user", { ip: request.clientIp, params: {user_id} });
