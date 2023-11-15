@@ -5,8 +5,8 @@ import type Script from "../dataTypes/Script";
 
 async function createScript(script: Script) : Promise<number> {
 	const response: QueryResult<Pick<Script, "script_id">> = await database.query(
-		"INSERT INTO scripts(user_id, content) VALUES($1, $2) RETURNING script_id",
-		[script.user_id, script.content]
+		"INSERT INTO scripts(user_id, name, content) VALUES($1, $2, $3) RETURNING script_id",
+		[script.user_id, script.name, script.content]
 	);
 
 	if (!response.rowCount) throw new UnexpectedException("Impossible de créer un nouveau script.");
@@ -15,7 +15,7 @@ async function createScript(script: Script) : Promise<number> {
 
 async function getAllOfUser(user_id: number) : Promise<Script[]> {
 	const scripts: QueryResult<Script> = await database.query(
-		"SELECT script_id, user_id, content FROM scripts WHERE user_id = $1",
+		"SELECT script_id, user_id, name, content FROM scripts WHERE user_id = $1",
 		[user_id]
 	);
 
@@ -23,7 +23,7 @@ async function getAllOfUser(user_id: number) : Promise<Script[]> {
 }
 
 async function getByID(script_id: number) : Promise<Script> {
-	const script: QueryResult<Script> = await database.query("SELECT script_id, user_id, content FROM scripts WHERE script_id = $1", [script_id]);
+	const script: QueryResult<Script> = await database.query("SELECT script_id, user_id, name, content FROM scripts WHERE script_id = $1", [script_id]);
 
 	if (!script.rowCount) throw new APIException(400, "Aucun script ne correspond à cet identifiant.");
 	return script.rows[0];
