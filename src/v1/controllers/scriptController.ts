@@ -35,6 +35,13 @@ async function getAllOfUser(request: Request, response: Response) : Promise<void
 	logger.log("Get all scripts of a user", { ip: request.clientIp, params: {user_id: request.session.user!.user_id} });
 }
 
+async function getAllPublic(request: Request, response: Response) : Promise<void> { // TODO: Pagination system
+	const scripts: Script[] = await scriptService.getAllPublic();
+
+	new APIResponse(200).setData({ scripts }).send(response);
+	logger.log("Get all public scripts", { ip: request.clientIp, params: {user_id: request.session.user!.user_id} });
+}
+
 async function getByID(request: Request, response: Response, next: NextFunction) : Promise<void> {
 	const script_id: number | null = request.params.script_id ? parseInt(request.params.script_id, 10) : null;
 	if (script_id === null) return next(new MissingQueryParams("script_id"));
@@ -58,6 +65,6 @@ async function saveScript(request: Request, response: Response) : Promise<void> 
 
 export default {
 	createScript,
-	getAllOfUser, getByID,
+	getAllOfUser, getAllPublic, getByID,
 	saveScript
 };

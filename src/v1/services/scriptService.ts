@@ -22,6 +22,17 @@ async function getAllOfUser(user_id: number) : Promise<Script[]> {
 	return scripts.rows;
 }
 
+async function getAllPublic() : Promise<Script[]> {
+	const scripts: QueryResult<Script> = await database.query(`
+		SELECT scripts.script_id, users.username, scripts.name, scripts.tags
+		FROM scripts
+		LEFT JOIN users ON scripts.user_id = users.user_id
+		WHERE scripts.is_public = true
+	`);
+
+	return scripts.rows;
+}
+
 async function getByID(script_id: number) : Promise<Script> {
 	const script: QueryResult<Script> = await database.query(
 		"SELECT script_id, user_id, name, content, tags, is_public FROM scripts WHERE script_id = $1",
@@ -43,6 +54,6 @@ async function saveScript(script: Script) : Promise<void> {
 
 export default {
 	createScript,
-	getAllOfUser, getByID,
+	getAllOfUser, getAllPublic, getByID,
 	saveScript
 };
