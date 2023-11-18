@@ -1,4 +1,4 @@
-import {IsDefined, IsInt, IsPositive, IsString, Length, MaxLength} from "class-validator";
+import { IsArray, IsBoolean, IsDefined, IsInt, IsPositive, IsString, Length } from "class-validator";
 
 export default class Script {
 	@IsDefined({ groups: [ "savedScript" ], message: "Identifiant de script invalide." })
@@ -20,11 +20,19 @@ export default class Script {
 	@IsString({ groups: [ "newScript", "savedScript" ], message: "Le contenu du script est invalide." })
 	content: string;
 
+	@IsArray({ groups: [ "newScript", "savedScript" ], message: "Le format des tags est invalide." })
+	tags: string[];
+
+	@IsBoolean({ groups: [ "newScript", "savedScript" ], message: "L'état public/privé est invalide." })
+	is_public: boolean;
+
 	constructor(data: Script) {
 		this.script_id = data?.script_id;
 		this.user_id = data?.user_id;
 		this.name = data?.name;
 		this.content = data?.content;
+		this.tags = data?.tags;
+		this.is_public = data?.is_public;
 	}
 }
 

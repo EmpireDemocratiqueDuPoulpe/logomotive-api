@@ -25,7 +25,10 @@ async function getAllOfUser(request: Request, response: Response) : Promise<void
 
 	for (const script of scripts) {
 		const scriptSize: number = new Blob([ script.content ]).size;
-		scriptsInfo.push({ script_id: script.script_id, user_id: script.user_id, name: script.name, fileSize: scriptSize });
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { content: _, ...filteredScriptProps } = script;
+
+		scriptsInfo.push({ ...filteredScriptProps, fileSize: scriptSize });
 	}
 
 	new APIResponse(200).setData({ scripts: scriptsInfo }).send(response);
