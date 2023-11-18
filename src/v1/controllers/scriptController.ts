@@ -3,7 +3,7 @@ import { MissingQueryParams } from "../../exceptions";
 import APIResponse from "../../utils/APIResponse/APIResponse";
 import Logger from "../../utils/Logger/Logger";
 import scriptService from "../services/scriptService";
-import Script from "../dataTypes/Script";
+import Script, { ScriptInfo } from "../dataTypes/Script";
 import validate from "../../utils/validate";
 
 const logger: Logger = new Logger({ prefix: "[ROUTE] ➟" });
@@ -21,8 +21,14 @@ async function createScript(request: Request, response: Response) : Promise<void
 
 async function getAllOfUser(request: Request, response: Response) : Promise<void> {
 	const scripts: Script[] = await scriptService.getAllOfUser(request.session.user!.user_id);
+	const scriptsInfo: ScriptInfo[] = [];
 
-	new APIResponse(200).setData({ scripts }).send(response);
+	for (const script of scripts) {
+		const scriptSize: number = new Blob([ script.content ]).size;
+		scriptsInfo.push({ script_id: script.script_id, user_id: script.user_id, name: script.name, fileSize: scriptSize });
+	}
+
+	new APIResponse(200).setData({ scripts: scriptsInfo }).send(response);
 	logger.log("Get all scripts of a user", { ip: request.clientIp, params: {user_id: request.session.user!.user_id} });
 }
 

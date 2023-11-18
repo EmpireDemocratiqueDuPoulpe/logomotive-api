@@ -27,3 +27,7 @@ export default class Script {
 		this.content = data?.content;
 	}
 }
+
+export type ScriptInfo = Omit<Script, "content"> & {
+	fileSize: number
+}
