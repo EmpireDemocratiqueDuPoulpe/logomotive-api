@@ -1,9 +1,9 @@
 import { IsArray, IsBoolean, IsDefined, IsInt, IsPositive, IsString, Length } from "class-validator";
 
 export default class Script {
-	@IsDefined({ groups: [ "savedScript" ], message: "Identifiant de script invalide." })
-	@IsInt({ groups: [ "savedScript" ], message: "Identifiant de script invalide." })
-	@IsPositive({ groups: [ "savedScript" ], message: "Identifiant de script invalide." })
+	@IsDefined({ groups: [ "updatingScript", "savedScript" ], message: "Identifiant de script invalide." })
+	@IsInt({ groups: [ "updatingScript", "savedScript" ], message: "Identifiant de script invalide." })
+	@IsPositive({ groups: [ "updatingScript", "savedScript" ], message: "Identifiant de script invalide." })
 	script_id: number;
 
 	@IsDefined({ groups: [ "newScript", "savedScript" ], message: "Identifiant utilisateur invalide." })
@@ -11,19 +11,19 @@ export default class Script {
 	@IsPositive({ groups: [ "newScript", "savedScript" ], message: "Identifiant utilisateur invalide." })
 	user_id: number;
 
-	@IsDefined({ groups: [ "newScript", "savedScript" ], message: "Le nom du script est nécessaire." })
-	@IsString({ groups: [ "newScript", "savedScript" ], message: "Le nom du script est invalide." })
-	@Length(1, 50, { groups: [ "newScript", "savedScript" ], message: "Le nom du script doit faire entre $constraint1 et $constraint2 caractères." })
+	@IsDefined({ groups: [ "newScript", "updatingScript", "savedScript" ], message: "Le nom du script est nécessaire." })
+	@IsString({ groups: [ "newScript", "updatingScript", "savedScript" ], message: "Le nom du script est invalide." })
+	@Length(1, 50, { groups: [ "newScript", "updatingScript", "savedScript" ], message: "Le nom du script doit faire entre $constraint1 et $constraint2 caractères." })
 	name: string;
 
-	@IsDefined({ groups: [ "newScript", "savedScript" ], message: "Le contenu du script est nécessaire." })
-	@IsString({ groups: [ "newScript", "savedScript" ], message: "Le contenu du script est invalide." })
+	@IsDefined({ groups: [ "newScript", "updatingScript", "savedScript" ], message: "Le contenu du script est nécessaire." })
+	@IsString({ groups: [ "newScript", "updatingScript", "savedScript" ], message: "Le contenu du script est invalide." })
 	content: string;
 
-	@IsArray({ groups: [ "newScript", "savedScript" ], message: "Le format des tags est invalide." })
+	@IsArray({ groups: [ "newScript", "updatingScript", "savedScript" ], message: "Le format des tags est invalide." })
 	tags: string[];
 
-	@IsBoolean({ groups: [ "newScript", "savedScript" ], message: "L'état public/privé est invalide." })
+	@IsBoolean({ groups: [ "newScript", "updatingScript", "savedScript" ], message: "L'état public/privé est invalide." })
 	is_public: boolean;
 
 	constructor(data: Script) {

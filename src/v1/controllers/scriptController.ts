@@ -48,17 +48,26 @@ async function getByID(request: Request, response: Response, next: NextFunction)
 
 	const script: Script = await scriptService.getByID(script_id);
 
+	if (!script.is_public && (script.user_id !== request.session.user!.user_id)) {
+		new APIResponse(403).setError("Vous n'avez pas la permission de voir ce script !");
+	}
+
 	new APIResponse(200).setData({ script }).send(response);
 	logger.log("Get a script by ID", { ip: request.clientIp, params: {user_id: request.session.user!.user_id, script_id} });
 }
 
 async function saveScript(request: Request, response: Response) : Promise<void> {
 	const script: Script = new Script(request.body);
-	script.user_id = request.session.user!.user_id;
-	await validate(script, { groups: ["savedScript"] });
+	await validate(script, { groups: ["updatingScript"] });
 
+	const scriptFromDB: Script = await scriptService.getByID(script.script_id);
+	if (scriptFromDB.user_id !== request.session.user!.user_id) {
+		new APIResponse(403).setError("Vous n'avez pas la permission de modifier ce script !");
+	}
+
+	script.user_id = request.session.user!.user_id;
 	await scriptService.saveScript(script);
-	new APIResponse(200).send(response);
+	new APIResponse(201).send(response);
 
 	logger.log("Saved a script", { ip: request.clientIp, params: {user_id: request.session.user!.user_id, script_id: script.script_id} });
 }
