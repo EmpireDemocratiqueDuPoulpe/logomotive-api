@@ -11,7 +11,7 @@ export default (router: Router) : void => {
 	/*************************************************************
 	 * CREATE
 	 *************************************************************/
-	route.post("/:script_id", isAuthenticated, scriptShareLinkController.createShareLink);
+	route.post("/", isAuthenticated, scriptShareLinkController.createShareLink);
 
 	/*************************************************************
 	 * READ
@@ -26,5 +26,5 @@ export default (router: Router) : void => {
 	/*************************************************************
 	 * DELETE
 	 *************************************************************/
-	route.delete("/:link_id", isAuthenticated, scriptShareLinkController.deleteShareLink);
+	route.delete("/", isAuthenticated, scriptShareLinkController.deleteShareLink);
 };
