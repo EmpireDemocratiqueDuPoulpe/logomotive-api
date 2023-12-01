@@ -25,14 +25,14 @@ async function createShareLink(request: Request, response: Response) : Promise<v
 	logger.log("Created a new script sharing link", { ip: request.clientIp, params: {user_id: request.session.user!.user_id, script_id: scriptShareLink.script_id, link_id} });
 }
 
-async function getScriptID(request: Request, response: Response, next: NextFunction) : Promise<void> {
+async function getScriptByLinkID(request: Request, response: Response, next: NextFunction) : Promise<void> {
 	const link_id: string | null = request.params.link_id ? request.params.link_id : null;
 	if (link_id === null) return next(new MissingQueryParams("link_id"));
 
-	const scriptShareLink: ScriptShareLink = await scriptShareLinkService.getScriptID(link_id);
-	new APIResponse(200).setData({ script_id: scriptShareLink.script_id }).send(response);
+	const script: Script = await scriptShareLinkService.getScriptByLinkID(link_id);
+	new APIResponse(200).setData({ script }).send(response);
 
-	logger.log("Get a script ID by sharing link", { ip: request.clientIp, params: {user_id: request.session.user!.user_id, script_id: scriptShareLink.script_id} });
+	logger.log("Get a script by sharing link", { ip: request.clientIp, params: {user_id: request.session.user!.user_id, script_id: script.script_id} });
 }
 
 async function getLinksOf(request: Request, response: Response, next: NextFunction) : Promise<void> {
@@ -46,21 +46,20 @@ async function getLinksOf(request: Request, response: Response, next: NextFuncti
 }
 
 async function deleteShareLink(request: Request, response: Response) : Promise<void> {
-	const scriptShareLink: ScriptShareLink = await scriptShareLinkService.getScriptID(request.body);
-	const script: Script = await scriptService.getByID(scriptShareLink.script_id);
+	const script: Script = await scriptShareLinkService.getScriptByLinkID(request.body.link_id);
 
 	if (script.user_id !== request.session.user!.user_id) {
 		new APIResponse(403).setError("Vous n'avez pas la permission de supprimer ce lien de partage !");
 	}
 
-	await scriptShareLinkService.deleteShareLink(scriptShareLink.link_id);
+	await scriptShareLinkService.deleteShareLink(request.body.link_id);
 	new APIResponse(201).send(response);
 
-	logger.log("Deleted a script sharing link", { ip: request.clientIp, params: {user_id: request.session.user!.user_id, script_id: script.script_id, link_id: scriptShareLink.link_id} });
+	logger.log("Deleted a script sharing link", { ip: request.clientIp, params: {user_id: request.session.user!.user_id, script_id: script.script_id, link_id: request.body.link_id} });
 }
 
 export default {
 	createShareLink,
-	getScriptID, getLinksOf,
+	getScriptByLinkID, getLinksOf,
 	deleteShareLink
 };

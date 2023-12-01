@@ -1,7 +1,9 @@
-import type { QueryResult } from "pg";
+import type {QueryResult} from "pg";
 import database from "../../database";
-import { APIException, UnexpectedException } from "../../exceptions";
+import {APIException, UnexpectedException} from "../../exceptions";
 import type ScriptShareLink from "../dataTypes/ScriptShareLink";
+import type Script from "../dataTypes/Script";
+import scriptService from "./scriptService";
 
 async function createShareLink(scriptShareLink: ScriptShareLink) : Promise<string> {
 	const response: QueryResult<Pick<ScriptShareLink, "link_id">> = await database.query(
@@ -13,14 +15,14 @@ async function createShareLink(scriptShareLink: ScriptShareLink) : Promise<strin
 	return response.rows[0].link_id;
 }
 
-async function getScriptID(link_id: string) : Promise<ScriptShareLink> {
+async function getScriptByLinkID(link_id: string) : Promise<Script> {
 	const scriptShareLink: QueryResult<ScriptShareLink> = await database.query(
 		"SELECT script_id FROM script_sharing_links WHERE link_id = $1",
 		[link_id]
 	);
 
 	if (!scriptShareLink.rowCount) throw new APIException(400, "Lien de partage invalide.");
-	return scriptShareLink.rows[0];
+	return await scriptService.getByID(scriptShareLink.rows[0].script_id);
 }
 
 async function getLinksOf(script_id: number) : Promise<ScriptShareLink[]> {
@@ -43,6 +45,6 @@ async function deleteShareLink(link_id: string) : Promise<void> {
 
 export default {
 	createShareLink,
-	getScriptID, getLinksOf,
+	getScriptByLinkID, getLinksOf,
 	deleteShareLink
 };

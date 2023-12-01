@@ -16,7 +16,7 @@ export default (router: Router) : void => {
 	/*************************************************************
 	 * READ
 	 *************************************************************/
-	route.get("/:link_id", isAuthenticated, scriptShareLinkController.getScriptID);
+	route.get("/:link_id", scriptShareLinkController.getScriptByLinkID);
 	route.get("/links-of/:script_id", isAuthenticated, scriptShareLinkController.getLinksOf);
 
 	/*************************************************************
