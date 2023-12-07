@@ -15,7 +15,7 @@ async function createScript(script: Script) : Promise<number> {
 
 async function getAllOfUser(user_id: number) : Promise<Script[]> {
 	const scripts: QueryResult<Script> = await database.query(
-		"SELECT script_id, user_id, name, content, tags, is_public FROM scripts WHERE user_id = $1",
+		"SELECT script_id, user_id, name, content, tags, is_public, created_at, updated_at FROM scripts WHERE user_id = $1",
 		[user_id]
 	);
 
@@ -24,7 +24,7 @@ async function getAllOfUser(user_id: number) : Promise<Script[]> {
 
 async function getAllPublic() : Promise<Script[]> {
 	const scripts: QueryResult<Script> = await database.query(`
-		SELECT scripts.script_id, users.username, scripts.name, scripts.tags
+		SELECT scripts.script_id, users.username, scripts.name, scripts.tags, scripts.created_at, scripts.updated_at
 		FROM scripts
 		LEFT JOIN users ON scripts.user_id = users.user_id
 		WHERE scripts.is_public = true
@@ -35,7 +35,7 @@ async function getAllPublic() : Promise<Script[]> {
 
 async function getByID(script_id: number) : Promise<Script> {
 	const script: QueryResult<Script> = await database.query(
-		"SELECT script_id, user_id, name, content, tags, is_public FROM scripts WHERE script_id = $1",
+		"SELECT script_id, user_id, name, content, tags, is_public, created_at, updated_at FROM scripts WHERE script_id = $1",
 		[script_id]
 	);
 
@@ -45,8 +45,8 @@ async function getByID(script_id: number) : Promise<Script> {
 
 async function saveScript(script: Script) : Promise<void> {
 	const response: QueryResult = await database.query(
-		"UPDATE scripts SET content = $1, tags = $2, is_public = $3 WHERE script_id = $4",
-		[script.content, script.tags, script.is_public, script.script_id]
+		"UPDATE scripts SET name = $1, content = $2, tags = $3, is_public = $4 WHERE script_id = $5",
+		[script.name, script.content, script.tags, script.is_public, script.script_id]
 	);
 
 	if (!response.rowCount) throw new UnexpectedException("Impossible de sauvegarder le script.");
