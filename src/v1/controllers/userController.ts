@@ -69,7 +69,7 @@ async function logoutUser(request: Request, response: Response, next: NextFuncti
 		request.session.regenerate(err => {
 			if (err) return next(err);
 
-			new APIResponse(204).send(response);
+			new APIResponse(200).send(response);
 			logger.log("Logout user", { ip: request.clientIp, params: {user_id} });
 		});
 	});
