@@ -39,7 +39,7 @@ async function getAllPublic(request: Request, response: Response) : Promise<void
 	const scripts: Script[] = await scriptService.getAllPublic();
 
 	new APIResponse(200).setData({ scripts }).send(response);
-	logger.log("Get all public scripts", { ip: request.clientIp, params: {user_id: request.session.user!.user_id} });
+	logger.log("Get all public scripts", { ip: request.clientIp, params: {user_id: request.session.user?.user_id} });
 }
 
 async function getByID(request: Request, response: Response, next: NextFunction) : Promise<void> {
@@ -48,7 +48,7 @@ async function getByID(request: Request, response: Response, next: NextFunction)
 
 	const script: Script = await scriptService.getByID(script_id);
 
-	if (!script.is_public && (script.user_id !== request.session.user!.user_id)) {
+	if (!script.is_public && (script.user_id !== request.session.user?.user_id)) {
 		new APIResponse(403).setError("Vous n'avez pas la permission de voir ce script !");
 	}
 

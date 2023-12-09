@@ -17,8 +17,8 @@ export default (router: Router) : void => {
 	 * READ
 	 *************************************************************/
 	route.get("/", isAuthenticated, scriptController.getAllOfUser);
-	route.get("/all", isAuthenticated, scriptController.getAllPublic);
-	route.get("/:script_id", isAuthenticated, scriptController.getByID);
+	route.get("/all", scriptController.getAllPublic);
+	route.get("/:script_id", scriptController.getByID);
 
 	/*************************************************************
 	 * UPDATE
