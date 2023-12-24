@@ -7,7 +7,9 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import requestIP from "request-ip";
-import session, {MemoryStore} from "express-session";
+import session, { MemoryStore } from "express-session";
+import swaggerUI from "swagger-ui-express";
+import swaggerSpecifications from "./docs/swagger";
 import { errorHandler, requireHTTPS } from "./middlewares/";
 import { EndpointNotFound } from "./exceptions";
 import v1 from "./v1";
@@ -65,6 +67,9 @@ function startServer() : void {
 	app.use(bodyParser.json({ limit: "1mb" }));
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(cookieParser());
+
+	// API docs
+	app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecifications, { explorer: true }));
 
 	// Add API routes
 	const apiPath: string = process.env.API_PREFIX ?? "";
