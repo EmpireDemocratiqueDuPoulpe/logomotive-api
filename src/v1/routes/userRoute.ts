@@ -16,7 +16,9 @@ export default (router: Router) : void => {
 	/*************************************************************
 	 * READ
 	 *************************************************************/
-	route.get("/", isAuthenticated, userController.getAll);
+	if (process.env.NODE_ENV === "developement") {
+		route.get("/", isAuthenticated, userController.getAll);
+	}
 
 	/*************************************************************
 	 * UPDATE
@@ -58,13 +60,15 @@ export default (router: Router) : void => {
  *                          schema:
  *                              type: object
  *                              properties:
- *                                  status: number
+ *                                  status:
+ *                                      type: number
  *                                  data:
  *                                      type: object
  *                                      properties:
- *                                          user_id: number
+ *                                          user_id:
+ *                                              type: number
  *      get:
- *          summary: Get all users.
+ *          summary: Get all users. FOR TESTING PURPOSE ONLY. THIS ROUTE WILL BE REMOVED BEFORE PRODUCTION.
  *          tags: [Users]
  *          security:
  *              - cookieAuth: []
@@ -76,7 +80,8 @@ export default (router: Router) : void => {
  *                          schema:
  *                              type: object
  *                              properties:
- *                                  status: number
+ *                                  status:
+ *                                      type: number
  *                                  data:
  *                                      type: array
  *                                      items:
@@ -99,17 +104,21 @@ export default (router: Router) : void => {
  *                          schema:
  *                              type: object
  *                              properties:
- *                                  status: number
+ *                                  status:
+ *                                      type: number
  *                                  data:
  *                                      type: object
  *                                      properties:
- *                                          sessionID: string
+ *                                          sessionID:
+ *                                              type: string
  *                                          user:
  *                                              $ref: "#/components/schemas/User"
  * /api/v1/users/authenticate:
  *      post:
  *          summary: Authenticate a user silently. Used by the web app to check if the user is still logged in.
  *          tags: [Authentication]
+ *          security:
+ *              - cookieAuth: []
  *          responses:
  *              200:
  *                  description: The user is authenticated.
@@ -118,17 +127,21 @@ export default (router: Router) : void => {
  *                          schema:
  *                              type: object
  *                              properties:
- *                                  status: number
+ *                                  status:
+ *                                      type: number
  *                                  data:
  *                                      type: object
  *                                      properties:
- *                                          sessionID: string
+ *                                          sessionID:
+ *                                              type: string
  *                                          user:
  *                                              $ref: "#/components/schemas/User"
  * /api/v1/users/logout:
  *      post:
  *          summary: Logout a user.
  *          tags: [Authentication]
+ *          security:
+ *              - cookieAuth: []
  *          responses:
  *              200:
  *                  description: The user is logged out.
@@ -137,5 +150,6 @@ export default (router: Router) : void => {
  *                          schema:
  *                              type: object
  *                              properties:
- *                                  status: number
+ *                                  status:
+ *                                      type: number
  */

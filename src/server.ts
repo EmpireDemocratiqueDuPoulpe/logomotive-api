@@ -70,7 +70,12 @@ function startServer() : void {
 
 	// API docs
 	if (process.env.NODE_ENV === "developement") {
-		app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecifications, { explorer: true }));
+		app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecifications, {
+			explorer: true,
+			swaggerOptions: {
+				operationsSorter: "method"
+			}
+		}));
 	}
 
 
