@@ -69,7 +69,10 @@ function startServer() : void {
 	app.use(cookieParser());
 
 	// API docs
-	app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecifications, { explorer: true }));
+	if (process.env.NODE_ENV === "developement") {
+		app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecifications, { explorer: true }));
+	}
+
 
 	// Add API routes
 	const apiPath: string = process.env.API_PREFIX ?? "";
@@ -96,6 +99,10 @@ function startServer() : void {
 			console.error(err);
 			process.exit(1);
 		});
+
+	if (process.env.NODE_ENV === "developement") {
+		console.log(`~~~ ${process.env.APP_NAME} | Documentation available at: http://localhost:${port}/docs`);
+	}
 }
 
 startServer();

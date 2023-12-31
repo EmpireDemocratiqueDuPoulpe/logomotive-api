@@ -73,7 +73,7 @@ export default class User {
  *                      type: string.
  *                      description: User email.
  *              example:
- *                  id: 1
+ *                  user_id: 1
  *                  username: Johmnny McNumgget
  *                  email: johmnny.mcnumgget@chee.ms
  *          RegisteringUser:

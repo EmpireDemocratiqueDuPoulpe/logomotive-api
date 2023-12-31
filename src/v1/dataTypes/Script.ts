@@ -49,3 +49,117 @@ export default class Script {
 export type ScriptInfo = Omit<Script, "content"> & {
 	fileSize: number
 }
+
+/**
+ * @swagger
+ * components:
+ *      schemas:
+ *          Script:
+ *              type: object
+ *              required:
+ *                  - script_id
+ *                  - user_id
+ *                  - name
+ *                  - content
+ *                  - tags
+ *                  - is_public
+ *                  - created_at
+ *                  - updated_at
+ *              properties:
+ *                  script_id:
+ *                      type: number
+ *                      description: The auto-generated script id.
+ *                  user_id:
+ *                      type: number
+ *                      description: The auto-generated user id.
+ *                  name:
+ *                      type: string
+ *                      description: Script's name.
+ *                  content:
+ *                      type: string
+ *                      description: Script's content.
+ *                  tags:
+ *                      type: array.
+ *                      description: Script's tags.
+ *                      items:
+ *                          type: string
+ *                  is_public:
+ *                     type: boolean
+ *                     description: Is the script public?
+ *                  created_at:
+ *                      type: string
+ *                      format: date-time
+ *                      description: The datetime the script was created.
+ *                  updated_at:
+ *                      type: string
+ *                      format: date-time
+ *                      description: The datetime the script was last updated.
+ *              example:
+ *                  script_id: 1
+ *                  user_id: 1
+ *                  name: Script de fou
+ *                  content: AV 1
+ *                  tags: []
+ *                  is_public: true
+ *                  created_at: 2023-11-18T19:57:22.688Z
+ *                  updated_at: 2023-12-24T12:15:44.467Z
+ *          NewScript:
+ *              type: object
+ *              required:
+ *                  - name
+ *                  - content
+ *                  - tags
+ *                  - is_public
+ *              properties:
+ *                  name:
+ *                      type: string
+ *                      description: Script's name.
+ *                  content:
+ *                      type: string
+ *                      description: Script's content.
+ *                  tags:
+ *                      type: array.
+ *                      description: Script's tags.
+ *                      items:
+ *                          type: string
+ *                  is_public:
+ *                     type: boolean
+ *                     description: Is the script public?
+ *              example:
+ *                  name: Nouveau script
+ *                  content: AV 1
+ *                  tags: []
+ *                  is_public: false
+ *          UpdatingScript:
+ *              type: object
+ *              required:
+ *                  - script_id
+ *                  - name
+ *                  - content
+ *                  - tags
+ *                  - is_public
+ *              properties:
+ *                  script_id:
+ *                      type: number
+ *                      description: The auto-generated script id.
+ *                  name:
+ *                      type: string
+ *                      description: Script's name.
+ *                  content:
+ *                      type: string
+ *                      description: Script's content.
+ *                  tags:
+ *                      type: array.
+ *                      description: Script's tags.
+ *                      items:
+ *                          type: string
+ *                  is_public:
+ *                     type: boolean
+ *                     description: Is the script public?
+ *              example:
+ *                  script_id: 1
+ *                  name: Nouveau nom de script
+ *                  content: AV 1\nRE 1
+ *                  tags: []
+ *                  is_public: true
+ */
