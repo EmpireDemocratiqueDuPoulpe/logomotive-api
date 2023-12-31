@@ -1,6 +1,6 @@
 import swaggerJSDoc from "swagger-jsdoc";
 
-const options: swaggerJSDoc.Options = {
+const options: swaggerJSDoc.OAS3Options = {
 	swaggerDefinition: {
 		openapi: "3.1.0",
 		info: {
@@ -10,7 +10,16 @@ const options: swaggerJSDoc.Options = {
 		},
 		servers: [
 			{ url: "http://localhost:8080" }
-		]
+		],
+		components: {
+			securitySchemes: {
+				cookieAuth: {
+					type: "apiKey",
+					in: "cookie",
+					name: `${process.env.APP_NAME}:connect.sid`
+				}
+			}
+		}
 	},
 	apis: [ "**/*.ts" ]
 };

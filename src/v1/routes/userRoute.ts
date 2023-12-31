@@ -36,8 +36,10 @@ export default (router: Router) : void => {
 /**
  * @swagger
  * tags:
- *      name: Users
- *      description: The user domain routes.
+ *      - name: Users
+ *        description: The user domain routes.
+ *      - name: Authentication
+ *        description: Authentication routes.
  * /api/v1/users:
  *      post:
  *          summary: Create a new user.
@@ -61,4 +63,79 @@ export default (router: Router) : void => {
  *                                      type: object
  *                                      properties:
  *                                          user_id: number
+ *      get:
+ *          summary: Get all users.
+ *          tags: [Users]
+ *          security:
+ *              - cookieAuth: []
+ *          responses:
+ *              200:
+ *                  description: The list of users.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  status: number
+ *                                  data:
+ *                                      type: array
+ *                                      items:
+ *                                          $ref: "#/components/schemas/User"
+ * /api/v1/users/login:
+ *      post:
+ *          summary: Login a user.
+ *          tags: [Authentication]
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: "#/components/schemas/LoginUser"
+ *          responses:
+ *              200:
+ *                  description: The user is logged in.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  status: number
+ *                                  data:
+ *                                      type: object
+ *                                      properties:
+ *                                          sessionID: string
+ *                                          user:
+ *                                              $ref: "#/components/schemas/User"
+ * /api/v1/users/authenticate:
+ *      post:
+ *          summary: Authenticate a user silently. Used by the web app to check if the user is still logged in.
+ *          tags: [Authentication]
+ *          responses:
+ *              200:
+ *                  description: The user is authenticated.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  status: number
+ *                                  data:
+ *                                      type: object
+ *                                      properties:
+ *                                          sessionID: string
+ *                                          user:
+ *                                              $ref: "#/components/schemas/User"
+ * /api/v1/users/logout:
+ *      post:
+ *          summary: Logout a user.
+ *          tags: [Authentication]
+ *          responses:
+ *              200:
+ *                  description: The user is logged out.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  status: number
  */
